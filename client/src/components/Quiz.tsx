@@ -57,7 +57,7 @@ const Quiz = () => {
   if (quizCompleted) {
     return (
       <div className="card p-4 text-center">
-        <h2>Quiz Completed</h2>
+        <h2>Quiz Completed!!!</h2>
         <div className="alert alert-success">
           Your score: {score}/{questions.length}
         </div>
