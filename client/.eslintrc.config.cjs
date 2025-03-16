@@ -1,5 +1,7 @@
 /* eslint-env node */
-module.exports = {
+import { defineConfig } from 'eslint-define-config';
+
+export default defineConfig({
   env: { browser: true, es2020: true },
   extends: [
     'eslint:recommended',
@@ -14,4 +16,4 @@ module.exports = {
     'react-refresh/only-export-components': 'warn',
     'react/prop-types': 'off',
   },
-}
+});
