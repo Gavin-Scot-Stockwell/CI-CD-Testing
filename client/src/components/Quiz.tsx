@@ -1,15 +1,15 @@
-import { useState, } from 'react';
+import { useState } from 'react';
 import type { Question } from '../models/Question.js';
 import { getQuestions } from '../services/questionApi.js';
 
-const Quiz = () => {
+const Quiz: React.FC = () => {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [quizCompleted, setQuizCompleted] = useState(false);
   const [quizStarted, setQuizStarted] = useState(false);
 
-  const getRandomQuestions = async () => {
+  const getRandomQuestions = async (): Promise<void> => {
     try {
       const questions = await getQuestions();
 
@@ -23,7 +23,7 @@ const Quiz = () => {
     }
   };
 
-  const handleAnswerClick = (isCorrect: boolean) => {
+  const handleAnswerClick = (isCorrect: boolean): void => {
     if (isCorrect) {
       setScore(score + 1);
     }
@@ -36,7 +36,7 @@ const Quiz = () => {
     }
   };
 
-  const handleStartQuiz = async () => {
+  const handleStartQuiz = async (): Promise<void> => {
     await getRandomQuestions();
     setQuizStarted(true);
     setQuizCompleted(false);

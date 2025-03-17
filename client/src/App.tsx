@@ -1,6 +1,6 @@
 import Quiz from './components/Quiz';
 
-function App() {
+function App(): JSX.Element {
   return (
     <div className="App">
       <Quiz />
