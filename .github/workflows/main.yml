@@ -49,6 +49,12 @@ jobs:
       - name: Print server logs
         run: cat server.log || true
 
+      # Print server status
+      - name: Print server status
+        run: |
+          ps -ef | grep node
+          netstat -tuln
+
       # Run lint
       - name: Run Lint
         run: npm run lint
