@@ -24,9 +24,19 @@ jobs:
         with:
           node-version: 18.x
 
-      # Install dependencies with --legacy-peer-deps
+      # Install dependencies
       - name: Install dependencies
         run: npm install --legacy-peer-deps
+
+      # Start the server
+      - name: Start server
+        run: npm start &
+        env:
+          PORT: 3001
+
+      # Wait for the server to be ready
+      - name: Wait for server to be ready
+        run: npx wait-on http://localhost:3001
 
       # Run lint
       - name: Run Lint
