@@ -28,9 +28,6 @@ jobs:
       - name: Install dependencies
         run: npm install --legacy-peer-deps --force
 
-      # Run npm install again to resolve optional dependencies
-      - name: Reinstall dependencies
-        run: npm install --force
 
       # Verify dependencies
       - name: Verify dependencies
@@ -43,6 +40,11 @@ jobs:
       # Run lint
       - name: Run Lint
         run: npm run lint
+      
+      
+      # Run npm install again to resolve optional dependencies
+      - name: Reinstall dependencies
+        run: npm install --force
 
       # Run component tests
       - name: Run Component Tests
