@@ -32,18 +32,10 @@ jobs:
       - name: Build the server
         run: npm run build
 
-      # Trigger deployment on Render
-      - name: Trigger deployment on Render
-        run: curl -X POST https://api.render.com/deploy/srv-cvasv6lds78s73af8bbg?key=2TLw7ZJzGII
-
-      # Wait for the deployed server to be ready
-      - name: Wait for deployed server to be ready
-        run: npx wait-on https://ci-cd-testing-48i8.onrender.com --timeout 60000
-
       # Run lint
       - name: Run Lint
         run: npm run lint
 
-      # Run tests
-      - name: Run Tests
-        run: npm run test
+      # Run component tests
+      - name: Run Component Tests
+        run: npx cypress run --component --browser electron

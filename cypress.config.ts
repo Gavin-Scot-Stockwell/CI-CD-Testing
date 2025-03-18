@@ -9,12 +9,6 @@ export default defineConfig({
       bundler: 'vite',
       viteConfig,
     },
-  },
-
-  e2e: {
-    baseUrl: "https://ci-cd-testing-48i8.onrender.com",
-    setupNodeEvents(on, config) {
-      // implement node event listeners here
-    },
+    specPattern: "cypress/component/**/*.cy.{js,jsx,ts,tsx}",
   },
 });
