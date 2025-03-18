@@ -24,10 +24,15 @@ jobs:
         with:
           node-version: 18.x
 
-      # Install dependencies with force
-      - name: Install dependencies
-        run: npm install --legacy-peer-deps --force
+      # Remove node_modules and package-lock.json
+      - name: Remove node_modules and package-lock.json
+        run: |
+          rm -rf node_modules
+          rm -f package-lock.json
 
+      # Install dependencies
+      - name: Install dependencies
+        run: npm install --legacy-peer-deps
 
       # Verify dependencies
       - name: Verify dependencies
@@ -40,11 +45,6 @@ jobs:
       # Run lint
       - name: Run Lint
         run: npm run lint
-      
-      
-      # Run npm install again to resolve optional dependencies
-      - name: Reinstall dependencies
-        run: npm install --force
 
       # Run component tests
       - name: Run Component Tests
