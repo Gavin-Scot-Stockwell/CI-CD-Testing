@@ -12,7 +12,7 @@ export default defineConfig({
   },
 
   e2e: {
-    baseUrl: 'http://localhost:3001',
+    baseUrl: "https://ci-cd-testing-48i8.onrender.com",
     setupNodeEvents(on, config) {
       // implement node event listeners here
     },
