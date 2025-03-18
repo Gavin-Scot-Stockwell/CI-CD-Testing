@@ -49,7 +49,7 @@ jobs:
       - name: Print server logs
         run: cat server.log || true
 
-      # Print server status
+      # Print server status and ports debugginggit 
       - name: Print server status
         run: |
           ps -ef | grep node
