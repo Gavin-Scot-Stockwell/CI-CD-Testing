@@ -28,9 +28,13 @@ jobs:
       - name: Install dependencies
         run: npm install --legacy-peer-deps
 
+      # Build the server
+      - name: Build the server
+        run: npm run build
+
       # Start the server
       - name: Start server
-        run: npm start &
+        run: npm run start &
         env:
           PORT: 3001
 
@@ -41,10 +45,6 @@ jobs:
       # Run lint
       - name: Run Lint
         run: npm run lint
-
-      # Run build
-      - name: Run Build
-        run: npm run build
 
       # Run tests
       - name: Run Tests
