@@ -1,52 +1,69 @@
 # Name of workflow
-name: Lint and Test workflow
+name: Deploy
 
-# Trigger workflow on all pull requests
+# Trigger workflow on push and pull request to main branch
 on:
+  push:
+    branches: [main]
   pull_request:
     branches:
-      - develop
-      - feature    
+      - main
 
 # Jobs to carry out
 jobs:
-  test:
-    # Operating system to run job on
+  ci:
+    name: deployToRender
     runs-on: ubuntu-latest
 
-    # Steps in job
+    services:
+      mongo:
+        image: mongo:latest
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongo --eval 'db.runCommand({ ping: 1 })'"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 3
+
     steps:
-      # Get code from repo
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Use Node.js 18.x
         uses: actions/setup-node@v2
         with:
           node-version: 18.x
 
-      # Remove node_modules and package-lock.json
-      - name: Remove node_modules and package-lock.json
-        run: |
-          rm -rf node_modules
-          rm -f package-lock.json
-
       # Install dependencies
       - name: Install dependencies
-        run: npm install --legacy-peer-deps
-
-      # Verify dependencies
-      - name: Verify dependencies
-        run: npm ls
+        run: npm install --legacy-peer-deps --force
 
       # Build the server
       - name: Build the server
-        run: npm run build
+        run: cd server && npm run build
 
-      # Run lint
-      - name: Run Lint
-        run: npm run lint
+      # Wait for MongoDB to be healthy
+      - name: Wait for MongoDB
+        run: |
+          until [ "`docker inspect -f {{.State.Health.Status}} $(docker ps -q --filter ancestor=mongo:latest)`" == "healthy" ]; do
+            echo "Waiting for MongoDB to be healthy..."
+            sleep 5
+          done
 
-      # Run component tests
-      - name: Run Component Tests
-        run: npx cypress run --component --browser electron
+      # Check Docker logs
+      - name: Check Docker logs
+        run: docker logs $(docker ps -q --filter "ancestor=mongo:latest")
+
+      # Start the server
+      - name: Start the server
+        env:
+          MONGODB_URI: mongodb://127.0.0.1:27017/techquiz
+        run: cd server && npm run start
+
+      # Deploy to Render
+      - name: Deploy
+        if: github.ref == 'refs/heads/main'
+        env:
+          DEPLOY_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+        run: |
+          curl "$DEPLOY_URL"
