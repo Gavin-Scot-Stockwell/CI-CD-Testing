@@ -57,12 +57,13 @@ jobs:
           CONTAINER_ID=$(docker ps -q --filter ancestor=mongo:4.4.6)
           docker logs $CONTAINER_ID
 
-      # Start the server in the background
+      # Create nohup.out file and start the server in the background
       - name: Start the server
         env:
           MONGODB_URI: mongodb://127.0.0.1:27017/techquiz
         run: |
           cd server
+          touch nohup.out
           nohup npm run start > nohup.out 2>&1 &
 
       # Deploy to Render
