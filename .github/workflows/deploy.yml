@@ -15,6 +15,17 @@ jobs:
     name: deployToRender
     runs-on: ubuntu-latest
 
+    services:
+      mongo:
+        image: mongo:4.4.6
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongo --eval 'db.runCommand({ ping: 1 })'"
+          --health-interval 30s
+          --health-timeout 10s
+          --health-retries 10
+
     steps:
       - uses: actions/checkout@v3
 
@@ -31,13 +42,30 @@ jobs:
       - name: Build the server
         run: cd server && npm run build
 
-      # Start the server
+      # Wait for MongoDB to be healthy
+      - name: Wait for MongoDB
+        run: |
+          CONTAINER_ID=$(docker ps -q --filter ancestor=mongo:4.4.6)
+          echo "MongoDB container ID: $CONTAINER_ID"
+          until [ "$(docker inspect -f {{.State.Health.Status}} $CONTAINER_ID)" == "healthy" ]; do
+            echo "Waiting for MongoDB to be healthy..."
+            sleep 5
+          done
+
+      # Check Docker logs
+      - name: Check Docker logs
+        run: |
+          CONTAINER_ID=$(docker ps -q --filter ancestor=mongo:4.4.6)
+          docker logs $CONTAINER_ID
+
+      # Start the server in the background
       - name: Start the server
         env:
           MONGODB_URI: mongodb://127.0.0.1:27017/techquiz
-        run: cd server && npm run start
+        run: |
+          cd server
+          nohup npm run start &
 
-    steps:
       # Deploy to Render
       - name: Deploy
         if: github.ref == 'refs/heads/main'
