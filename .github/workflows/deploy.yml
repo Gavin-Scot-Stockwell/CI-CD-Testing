@@ -72,3 +72,13 @@ jobs:
           DEPLOY_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
         run: |
           curl "$DEPLOY_URL"
+
+      # Check Running Processes
+      - name: Check Running Processes
+        run: |
+          ps aux
+
+      # Check Server Logs
+      - name: Check Server Logs
+        run: |
+          tail -n 100 nohup.out
