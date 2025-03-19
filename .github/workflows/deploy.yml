@@ -45,7 +45,7 @@ jobs:
       # Start the server
       - name: Start the server
         env:
-          MONGODB_URI: mongodb://localhost:27017/techquiz
+          MONGODB_URI: mongodb://127.0.0.1:27017/techquiz
         run: cd server && npm run start
 
       # Deploy to Render
