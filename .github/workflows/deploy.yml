@@ -57,11 +57,18 @@ jobs:
           CONTAINER_ID=$(docker ps -q --filter ancestor=mongo:4.4.6)
           docker logs $CONTAINER_ID
 
-      # Start the server and deploy concurrently
-      - name: Start server and deploy
+      # Start the server in the background
+      - name: Start the server
         env:
           MONGODB_URI: mongodb://127.0.0.1:27017/techquiz
-          DEPLOY_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
         run: |
           cd server
-          npx concurrently "npm run start" "curl $DEPLOY_URL"
+          nohup npm run start &
+
+      # Deploy to Render
+      - name: Deploy
+        if: github.ref == 'refs/heads/main'
+        env:
+          DEPLOY_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+        run: |
+          curl "$DEPLOY_URL"
