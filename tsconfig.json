@@ -28,8 +28,10 @@
     "useUnknownInCatchVariables": true /* Ensure 'unknown' is used for catch clause variables. */,
     "jsx": "react-jsx",
     /* Output */
-    "outDir": "./dist" /* Redirect output structure to the directory. */
+    "outDir": "./dist" /* Redirect output structure to the directory. */,
+    "rootDir": "./src",
+    
   },
-  "include": ["client/src", "server/src"],
+  "include": ["client/src", "server/src", "src/**/*"],
   "exclude": ["node_modules", "dist"]
 }
