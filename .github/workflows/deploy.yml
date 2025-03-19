@@ -15,6 +15,17 @@ jobs:
     name: deployToRender
     runs-on: ubuntu-latest
 
+    services:
+      mongo:
+        image: mongo:latest
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongo --eval 'db.runCommand({ ping: 1 })'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - uses: actions/checkout@v3
 
@@ -33,6 +44,8 @@ jobs:
 
       # Start the server
       - name: Start the server
+        env:
+          MONGODB_URI: mongodb://localhost:27017/techquiz
         run: cd server && npm run start
 
       # Deploy to Render
