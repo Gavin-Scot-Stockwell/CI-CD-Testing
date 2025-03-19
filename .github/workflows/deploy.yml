@@ -65,6 +65,26 @@ jobs:
           cd server
           touch nohup.out
           nohup npm run start > nohup.out 2>&1 &
+          sleep 2  # Give it time to create nohup.out
+          if [ ! -f nohup.out ]; then
+            echo "Error: nohup.out was not created!"
+            exit 1
+          fi
+
+      # Verify the server is running
+      - name: Verify Server is Running
+        run: |
+          sleep 5
+          if ! pgrep -f "npm run start"; then
+            echo "Error: Server process not running!"
+            exit 1
+          fi
+
+      # Check if nohup.out file exists
+      - name: Check nohup.out file
+        run: |
+          sleep 10  # Increased sleep time
+          ls -l nohup.out
 
       # Deploy to Render
       - name: Deploy
@@ -83,4 +103,8 @@ jobs:
       - name: Check Server Logs
         run: |
           sleep 10
-          tail -n 100 nohup.out
+          if [ -f nohup.out ]; then
+            tail -n 100 nohup.out
+          else
+            echo "nohup.out not found"
+          fi
