@@ -22,9 +22,9 @@ jobs:
           - 27017:27017
         options: >-
           --health-cmd "mongo --eval 'db.runCommand({ ping: 1 })'"
-          --health-interval 5s
-          --health-timeout 5s
-          --health-retries 3
+          --health-interval 30s
+          --health-timeout 10s
+          --health-retries 10
 
     steps:
       - uses: actions/checkout@v3
@@ -45,14 +45,18 @@ jobs:
       # Wait for MongoDB to be healthy
       - name: Wait for MongoDB
         run: |
-          until [ "`docker inspect -f {{.State.Health.Status}} $(docker ps -q --filter ancestor=mongo:latest)`" == "healthy" ]; do
+          CONTAINER_ID=$(docker ps -q --filter ancestor=mongo:4.4.6)
+          echo "MongoDB container ID: $CONTAINER_ID"
+          until [ "$(docker inspect -f {{.State.Health.Status}} $CONTAINER_ID)" == "healthy" ]; do
             echo "Waiting for MongoDB to be healthy..."
             sleep 5
           done
 
       # Check Docker logs
       - name: Check Docker logs
-        run: docker logs $(docker ps -q --filter "ancestor=mongo:latest")
+        run: |
+          CONTAINER_ID=$(docker ps -q --filter ancestor=mongo:4.4.6)
+          docker logs $CONTAINER_ID
 
       # Start the server
       - name: Start the server
