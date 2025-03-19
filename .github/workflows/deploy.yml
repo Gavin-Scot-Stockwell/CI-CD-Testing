@@ -29,11 +29,11 @@ jobs:
 
       # Build the server
       - name: Build the server
-        run: npm run build
+        run: cd server && npm run build
 
       # Start the server
       - name: Start the server
-        run: npm run start
+        run: cd server && npm run start
 
       # Deploy to Render
       - name: Deploy
