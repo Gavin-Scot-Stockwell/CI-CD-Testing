@@ -63,8 +63,7 @@ jobs:
           MONGODB_URI: mongodb://127.0.0.1:27017/techquiz
         run: |
           cd server
-          touch nohup.out
-          nohup npm run start &
+          nohup npm run start > nohup.out 2>&1 &
 
       # Deploy to Render
       - name: Deploy
@@ -82,4 +81,5 @@ jobs:
       # Check Server Logs
       - name: Check Server Logs
         run: |
+          sleep 10
           tail -n 100 nohup.out
