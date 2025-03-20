@@ -76,6 +76,11 @@ jobs:
           pm2 start npm --name "techquiz-server" -- run start
           pm2 save
 
+      # Capture pm2 Logs
+      - name: Capture pm2 Logs
+        run: |
+          pm2 logs techquiz-server --lines 100
+
       # Verify the server is running
       - name: Verify Server is Running
         run: |
