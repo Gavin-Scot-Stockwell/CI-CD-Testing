@@ -24,7 +24,7 @@ A homework project that focused on getting github actions to work.
 
 
 ## Usage
-* Use the cypress app to test the html of the quiz with the built in 
+* Use website, and or check out the actions
 
 ## Contributing
 * Gavin Stockwell -yml
