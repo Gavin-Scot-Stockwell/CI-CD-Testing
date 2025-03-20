@@ -37,6 +37,10 @@ jobs:
       - name: Install dependencies
         run: npm install --legacy-peer-deps --force
 
+      # Install pm2
+      - name: Install pm2
+        run: npm install -g pm2
+
       # Build the server
       - name: Build the server
         run: cd server && npm run build
@@ -63,41 +67,23 @@ jobs:
           pwd
           ls -l
 
-      # Create nohup.out file and start the server in the background
+      # Start the server using pm2
       - name: Start the server
         env:
           MONGODB_URI: mongodb://127.0.0.1:27017/techquiz
         run: |
           cd server
-          touch nohup.out
-          nohup npm run start > nohup.out 2>&1 &
-          sleep 2  # Give it time to create nohup.out
-          if [ ! -f nohup.out ]; then
-            echo "Error: nohup.out was not created!"
-            exit 1
-          fi
-
-      # Capture Server Start Errors
-      - name: Capture Server Start Errors
-        run: |
-          cd server
-          npm run start 2>&1 | tee server-start.log
-          cat server-start.log
+          pm2 start npm --name "techquiz-server" -- run start
+          pm2 save
 
       # Verify the server is running
       - name: Verify Server is Running
         run: |
           sleep 5
-          if ! pgrep -f "npm run start"; then
+          if ! pm2 list | grep -q "techquiz-server"; then
             echo "Error: Server process not running!"
             exit 1
           fi
-
-      # Check if nohup.out file exists
-      - name: Check nohup.out file
-        run: |
-          sleep 10  # Increased sleep time
-          ls -l nohup.out
 
       # Deploy to Render
       - name: Deploy
@@ -110,14 +96,9 @@ jobs:
       # Check Running Processes
       - name: Check Running Processes
         run: |
-          ps aux
+          pm2 list
 
       # Check Server Logs
       - name: Check Server Logs
         run: |
-          sleep 10
-          if [ -f nohup.out ]; then
-            tail -n 100 nohup.out
-          else
-            echo "nohup.out not found"
-          fi
+          pm2 logs techquiz-server --lines 100
