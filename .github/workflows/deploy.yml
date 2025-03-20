@@ -71,6 +71,13 @@ jobs:
             exit 1
           fi
 
+      # Capture Server Start Errors
+      - name: Capture Server Start Errors
+        run: |
+          cd server
+          npm run start 2>&1 | tee server-start.log
+          cat server-start.log
+
       # Verify the server is running
       - name: Verify Server is Running
         run: |
