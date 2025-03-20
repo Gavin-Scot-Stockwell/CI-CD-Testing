@@ -57,6 +57,12 @@ jobs:
           CONTAINER_ID=$(docker ps -q --filter ancestor=mongo:4.4.6)
           docker logs $CONTAINER_ID
 
+      # Ensure correct working directory
+      - name: Ensure correct working directory
+        run: |
+          pwd
+          ls -l
+
       # Create nohup.out file and start the server in the background
       - name: Start the server
         env:
