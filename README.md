@@ -20,7 +20,10 @@
 A homework project that focused on getting github actions to work.
 
 ## Installation
-* Go to the website
+* Download the files
+* npm i to get packages
+* npm run build at root to build the dist
+* npm run start:dev to get it to run
 
 
 ## Usage
